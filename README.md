@@ -82,7 +82,7 @@ webpmux와 달리 concatfile 의 시간은 sec 단위이다.
 
 생성된 png 파일을 concat 파일을 사용하여 인코딩을 한다.
 
-	ffmpeg -f concat -i concatfile.txt output.mp4
+	ffmpeg -f concat -i concatfile.txt -pix_fmt yuv420p output.mp4
 
 
 
