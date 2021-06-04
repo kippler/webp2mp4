@@ -92,6 +92,5 @@ webpmux와 달리 concatfile 의 시간은 sec 단위이다.
 
 	php -d disable_functions= webp2mp4.php src.webp dst.mp4
 
-
-
+![screenshot](screenshot.png)
 
