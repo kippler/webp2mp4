@@ -17,7 +17,7 @@ function webp2png($src, $tmpdir)
 	$result = exec($cmd, $output, $retval);
 }
 
-function getwebpinfo($src)
+function getwebpinfo($src, &$width, &$height)
 {
 	$cmd = sprintf("webpmux -info %s", $src);
 	printf("%s\n", $cmd);
@@ -36,6 +36,7 @@ No.: width height alpha x_offset y_offset duration   dispose blend image_size  c
   5:   592   418    no        0        0     5000 background    no       2968       lossy
 Size of the EXIF metadata: 97
 	*/
+	$width = 0;
 	$durations = array();
 	foreach($output as $line)
 	{
@@ -44,6 +45,12 @@ Size of the EXIF metadata: 97
 		{
 			sscanf($line, "%s %s %s %s %s %s %s %s %s %s %s", $a1, $a2, $a3, $a4, $a5, $a6, $a7, $a8, $a9, $a10, $a11);
 			array_push($durations, $a7);
+
+			if($width==0)
+			{
+				$width = $a2;
+				$height = $a3;
+			}
 		}
 	}
 
@@ -101,10 +108,20 @@ function clear_tmp($tmpdir, $concat_file_name)
 function webp2mp4($src, $dst, $tmpdir)
 {
 	webp2png($src, $tmpdir);
-	$durations = getwebpinfo($src);
+	$width = 0; 
+	$height = 0;
+	$durations = getwebpinfo($src, $width, $height);
 	$concat_file_name = write_concatfile($tmpdir, $durations);
 
-	$ffmpeg_options = "-y -pix_fmt yuv420p";
+	$ffmpeg_options = "-y -pix_fmt yuv420p ";
+
+	// width must be divisible by 2
+	if($width%2 || $height%2)
+	{
+		$ffmpeg_options = $ffmpeg_options . sprintf("-vf scale=%d:%d ", $width-$width%2, $height-$height%2 );
+	}
+
+
 	$cmd = sprintf("ffmpeg -f concat -i %s %s %s", $concat_file_name, $ffmpeg_options, $dst);
 	printf("%s\n", $cmd);
 	$result = exec($cmd, $output, $retval);
