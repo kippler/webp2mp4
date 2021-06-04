@@ -104,11 +104,10 @@ function webp2mp4($src, $dst, $tmpdir)
 	$durations = getwebpinfo($src);
 	$concat_file_name = write_concatfile($tmpdir, $durations);
 
-	$ffmpeg_options = "-y";
-	$cmd = sprintf("ffmpeg %s -f concat -i %s %s", $ffmpeg_options, $concat_file_name, $dst);
+	$ffmpeg_options = "-y -pix_fmt yuv420p";
+	$cmd = sprintf("ffmpeg -f concat -i %s %s %s", $concat_file_name, $ffmpeg_options, $dst);
 	printf("%s\n", $cmd);
 	$result = exec($cmd, $output, $retval);
-
 	clear_tmp($tmpdir, $concat_file_name);
 }
 
