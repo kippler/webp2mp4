@@ -25,7 +25,7 @@ webp 파일은 아직 이미지 취급을 하기 때문에 이러한 명령으�
 
 Animated WebP 파일을 PNG 로 변환하기 위해서 webpmux 를 설치한다.
 
-	git clone https://chromium.googlesource.com/webm/libwebp && cd libwebp.
+	git clone https://chromium.googlesource.com/webm/libwebp && cd libwebp
 	echo "bin_PROGRAMS += anim_dump" >> examples/Makefile.am
 	./autogen.sh && ./configure && make && sudo make install
 	echo "/usr/local/lib" |sudo tee -a /etc/ld.so.conf&& sudo ldconfig
